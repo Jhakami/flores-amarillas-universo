@@ -2,7 +2,7 @@
 
 ## Fuente de verdad
 
-Leer antes de editar: `MASTER_PROMPT.md`, `docs/ARCHITECTURE.md`, `docs/VISUAL_SPEC.md` y `docs/DECISIONS.md`. Los contratos compartidos se actualizan primero en documentación y después en código.
+Para V2 leer primero: `MASTER_PROMPT_V2.md`, `docs/ARCHITECTURE_V2.md`, `docs/VISUAL_SPEC_V2.md` y `docs/DECISIONS_V2.md`. Los contratos compartidos se actualizan primero en documentación y después en código.
 
 ## Ownership
 

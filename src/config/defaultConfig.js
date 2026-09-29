@@ -1,2 +1,21 @@
-export const defaultConfig={version:1,general:{background:'#000000',exposure:1.1,quality:'AUTO'},content:{title:'Feliz día de las Flores Amarillas',prompt:'Toca para iniciar',dedication:'Un pequeño universo floreció para ti.'},timing:{introDelay:.55,introDuration:1.6,explosionDuration:2.2,messageDuration:2.3,travelDuration:3.2,blackHoleRevealDuration:3.2},blackHole:{size:1.15,diskRadius:2.6,diskThickness:.32,diskSpeed:.09,photonIntensity:2.2,lensingStrength:.7,lensingRadius:.2},bloom:{strength:1.35,radius:.48,threshold:.24},particles:{starCount:8000,starSize:2.2,twinkle:.45,dustDensity:1800,dustSpeed:.025},flowers:{count:22,scale:1,spread:9,floatAmplitude:.16,floatSpeed:.35},camera:{fov:50,distance:6,parallax:.18,smoothing:.06},audio:{source:'procedural',volume:.12,muted:false},accessibility:{reducedMotion:false,textScale:1},performance:{minFps:30}};
+export const defaultConfig = {
+  version: 2,
+  general: { background: '#000000', exposure: 1.08, quality: 'AUTO' },
+  content: { title: 'Feliz día de las Flores Amarillas', prompt: 'Toca para iniciar', dedication: 'Un pequeño universo floreció para ti.' },
+  narrative: { introDelay: 0.58, introDuration: 1.6, explosionDuration: 2.3, messageDuration: 2.15, travelDuration: 3.4, blackHoleRevealDuration: 3.3 },
+  timing: { introDelay: 0.58, introDuration: 1.6, explosionDuration: 2.3, messageDuration: 2.15, travelDuration: 3.4, blackHoleRevealDuration: 3.3 },
+  camera360: { damping: 0.06, minDistance: 4.5, maxDistance: 18, minPolarAngle: 0.12, maxPolarAngle: 3.02, autoRotate: true, autoRotateSpeed: 0.16, idleDelay: 8 },
+  galaxy: { seed: 20240921, radius: 10.5, height: 7.5, microstars: 14000, dust: 5000, highlights: 320, rotationSpeed: 0.006 },
+  blackHole: { size: 1.2, diskRadius: 2.8, diskThickness: 0.38, diskSpeed: 0.075, photonIntensity: 2.35, lensingStrength: 0.72, lensingRadius: 0.22 },
+  bloom: { strength: 1.28, radius: 0.46, threshold: 0.25 },
+  particles: { starCount: 14000, starSize: 2.1, twinkle: 0.42, dustDensity: 5000, dustSpeed: 0.018 },
+  flowers: { count: 68, scale: 1, spread: 10, floatAmplitude: 0.08, floatSpeed: 0.3 },
+  spatialText: { count: 24, scale: 1, opacity: 0.68, billboard: true },
+  interactions: { focusScale: 1.16, focusDuration: 0.8, raycast: true },
+  cards: { backdropBlur: 22, showNavigation: false },
+  camera: { fov: 48, distance: 12, parallax: 0, smoothing: 0.06 },
+  audio: { source: 'procedural', volume: 0.1, muted: false },
+  accessibility: { reducedMotion: false, textScale: 1, highContrast: false },
+  performance: { minFps: 30, maxInitialMegabytes: 9 },
+};
 export default defaultConfig;

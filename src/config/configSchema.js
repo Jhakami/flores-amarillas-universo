@@ -1,6 +1,8 @@
-import {defaultConfig} from './defaultConfig.js';
-const ranges={exposure:[.6,1.8],strength:[0,2.5],radius:[0,1],threshold:[0,1],lensingStrength:[0,1.5],starCount:[500,15000],count:[4,120],fov:[35,75],parallax:[0,.35],smoothing:[.01,.2],volume:[0,1]};
-const clone=v=>JSON.parse(JSON.stringify(v));
-function merge(base,input){const out=clone(base);for(const [k,v] of Object.entries(input||{})){if(!(k in out))continue;if(v&&typeof v==='object'&&!Array.isArray(v)&&out[k]&&typeof out[k]==='object')out[k]=merge(out[k],v);else if(typeof v===typeof out[k])out[k]=v;}return out;}
-function clampTree(obj){for(const [k,v] of Object.entries(obj)){if(v&&typeof v==='object')clampTree(v);else if(typeof v==='number'&&ranges[k])obj[k]=Math.min(ranges[k][1],Math.max(ranges[k][0],v));}return obj;}
-export function validateConfig(input){if(!input||typeof input!=='object')return clone(defaultConfig);return clampTree(merge(defaultConfig,input));}
+import { defaultConfig } from './defaultConfig.js';
+import { migrateConfig } from './migrations.js';
+const ranges = { exposure: [.6,1.8], strength:[0,2.5], radius:[0,24], threshold:[0,1], lensingStrength:[0,1.5], starCount:[500,15000], count:[4,120], fov:[35,75], parallax:[0,.35], smoothing:[.01,.2], volume:[0,1], damping:[.01,.2], minDistance:[3,12], maxDistance:[8,30], minPolarAngle:[.02,1.2], maxPolarAngle:[1.9,3.12], autoRotateSpeed:[0,1], idleDelay:[2,30], microstars:[1000,15000], dust:[300,5000], highlights:[20,500], height:[2,14], scale:[.5,2], opacity:[.1,1] };
+const clone = value => JSON.parse(JSON.stringify(value));
+function merge(base,input){const out=clone(base);for(const[k,v]of Object.entries(input||{})){if(!(k in out))continue;if(v&&typeof v==='object'&&!Array.isArray(v)&&out[k]&&typeof out[k]==='object')out[k]=merge(out[k],v);else if(typeof v===typeof out[k])out[k]=v;}return out;}
+function clampTree(obj){for(const[k,v]of Object.entries(obj)){if(v&&typeof v==='object')clampTree(v);else if(typeof v==='number'&&ranges[k])obj[k]=Math.min(ranges[k][1],Math.max(ranges[k][0],v));}return obj;}
+function normalizeIntervals(config){const camera=config.camera360;if(camera.minDistance>=camera.maxDistance){const low=Math.min(camera.minDistance,camera.maxDistance),high=Math.max(camera.minDistance,camera.maxDistance);camera.minDistance=low;camera.maxDistance=high===low?low+.5:high;}if(camera.minPolarAngle>=camera.maxPolarAngle){const low=Math.min(camera.minPolarAngle,camera.maxPolarAngle),high=Math.max(camera.minPolarAngle,camera.maxPolarAngle);camera.minPolarAngle=low;camera.maxPolarAngle=high===low?Math.min(3.12,low+.1):high;}return config;}
+export function validateConfig(input){if(!input||typeof input!=='object')return clone(defaultConfig);return normalizeIntervals(clampTree(merge(defaultConfig,migrateConfig(input))));}
