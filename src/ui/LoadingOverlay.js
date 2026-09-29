@@ -1,0 +1,1 @@
+export class LoadingOverlay{constructor(root){this.el=document.createElement('div');this.el.className='loading';this.el.textContent='Preparando un pequeño universo…';root.append(this.el);}show(){this.el.classList.add('visible');}hide(){this.el.classList.remove('visible');setTimeout(()=>this.el.remove(),700);}}

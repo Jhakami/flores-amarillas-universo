@@ -1,0 +1,3 @@
+import {defaultConfig} from '../config/defaultConfig.js';import {validateConfig} from '../config/configSchema.js';
+const KEY='yellowUniverseConfig';
+export class ConfigManager extends EventTarget{constructor(initial){super();this.config=validateConfig(initial||this.load());}load(){try{return JSON.parse(localStorage.getItem(KEY))||defaultConfig}catch{return defaultConfig}}save(){localStorage.setItem(KEY,JSON.stringify(this.config));this.emit();}reset(){this.config=validateConfig(defaultConfig);localStorage.removeItem(KEY);this.emit();}import(text){this.config=validateConfig(JSON.parse(text));this.save();return this.config;}export(){return JSON.stringify(this.config,null,2);}emit(){this.dispatchEvent(new CustomEvent('change',{detail:this.config}));}}

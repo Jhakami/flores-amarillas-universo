@@ -1,0 +1,1 @@
+export class KeyboardController{constructor(actions){this.actions=actions;this.handler=e=>{if(e.key==='e'||e.key==='E')actions.editor?.();if(e.key==='m'||e.key==='M')actions.audio?.();if(e.key==='r'||e.key==='R')actions.restart?.();if(e.key==='Escape')actions.escape?.();};addEventListener('keydown',this.handler);}dispose(){removeEventListener('keydown',this.handler);}}

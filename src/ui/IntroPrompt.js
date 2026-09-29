@@ -1,0 +1,1 @@
+export class IntroPrompt{constructor(root,text){this.el=document.createElement('button');this.el.className='intro-prompt';this.el.textContent=text;this.el.setAttribute('aria-label',text);root.append(this.el);}show(){this.el.classList.add('visible');}hide(){this.el.classList.remove('visible');}}

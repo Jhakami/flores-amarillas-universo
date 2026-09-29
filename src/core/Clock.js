@@ -1,0 +1,1 @@
+import * as THREE from 'three';export class Clock{constructor(){this.clock=new THREE.Clock();this.frame={elapsed:0,delta:0};}tick(){this.frame.delta=Math.min(this.clock.getDelta(),.05);this.frame.elapsed=this.clock.elapsedTime;return this.frame;}reset(){this.clock.start();}}

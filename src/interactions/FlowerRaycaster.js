@@ -1,0 +1,2 @@
+import * as THREE from 'three';
+export class FlowerRaycaster{constructor(camera,flowers,onSelect){this.camera=camera;this.flowers=flowers;this.onSelect=onSelect;this.raycaster=new THREE.Raycaster();this.pointer=new THREE.Vector2();}pick(x,y){this.pointer.set(x,y);this.raycaster.setFromCamera(this.pointer,this.camera);const hit=this.raycaster.intersectObjects(this.flowers.items,false)[0];if(hit)this.onSelect(hit.object,hit.point);return Boolean(hit);}}

@@ -1,0 +1,1 @@
+export const performanceProfiles={LOW:{dpr:1.25,stars:1400,dust:500,flowers:10,lensing:false,bloom:.75},MEDIUM:{dpr:1.6,stars:3600,dust:1200,flowers:16,lensing:true,bloom:1},HIGH:{dpr:2,stars:10000,dust:2600,flowers:28,lensing:true,bloom:1.2}};

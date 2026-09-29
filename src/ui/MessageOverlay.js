@@ -1,0 +1,1 @@
+export class MessageOverlay{constructor(root,text){this.el=document.createElement('div');this.el.className='message';this.el.setAttribute('aria-live','polite');this.el.textContent=text;root.append(this.el);}show(){this.el.classList.add('visible');}hide(){this.el.classList.remove('visible');}}

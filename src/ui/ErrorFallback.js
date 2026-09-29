@@ -1,0 +1,1 @@
+export class ErrorFallback{constructor(root){this.root=root;}show(message='Tu navegador no pudo abrir este universo en 3D.'){this.root.innerHTML=`<section class="fallback"><h1>Universo de Flores Amarillas</h1><p>${message}</p><p>Donde floreces tú, el universo aprende a tener luz.</p></section>`;}}
