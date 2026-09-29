@@ -54,7 +54,7 @@ export class PostProcessing {
     this.composer.render(delta);
   }
 
-  update(frame) { this.lensPass.update(this.camera, this.blackHole); }
+  update(_frame) { this.lensPass.update(this.camera, this.blackHole); }
 
   resize(width, height, pixelRatio = this.renderer.getPixelRatio()) {
     this.composer.setPixelRatio(pixelRatio);
