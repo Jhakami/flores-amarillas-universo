@@ -1,19 +1,23 @@
 precision highp float;
-
 uniform float uTime;
 uniform float uIntensity;
 uniform float uPulseAmount;
 uniform float uOpacity;
+uniform float uQuality;
 uniform vec3 uColorCore;
 uniform vec3 uColorGlow;
 varying vec2 vUv;
-
+varying vec3 vViewNormal;
+varying vec3 vViewPosition;
 void main() {
-  float crossSection = abs(vUv.y - 0.5) * 2.0;
-  float core = pow(max(0.0, 1.0 - crossSection), 7.0);
-  float halo = pow(max(0.0, 1.0 - crossSection), 1.8);
+  vec3 viewDirection = normalize(-vViewPosition);
+  float fresnel = pow(1.0 - abs(dot(normalize(vViewNormal), viewDirection)), 2.0);
+  float tube = 1.0 - abs(fract(vUv.y) * 2.0 - 1.0);
+  float filament = 0.92 + 0.08 * sin(vUv.x * 180.0 - uTime * 0.8) * uQuality;
+  float core = pow(tube, 4.0);
+  float halo = mix(0.45, 1.0, fresnel);
   float pulse = 1.0 + sin(uTime * 0.65) * uPulseAmount;
-  vec3 color = mix(uColorGlow, uColorCore, core) * (halo + core * 2.5) * uIntensity * pulse;
-  float alpha = smoothstep(1.0, 0.04, crossSection) * uOpacity;
-  gl_FragColor = vec4(color * alpha, alpha);
+  vec3 color = mix(uColorGlow, uColorCore, core) * (0.8 + core * 2.2 + fresnel * 0.65);
+  float alpha = (0.72 + fresnel * 0.28) * filament * uOpacity;
+  gl_FragColor = vec4(color * uIntensity * pulse * halo * alpha, alpha);
 }

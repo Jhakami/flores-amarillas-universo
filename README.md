@@ -1,6 +1,6 @@
 # Universo de Flores Amarillas
 
-Experiencia WebGL cinematográfica en la que un girasol se transforma de forma continua en partículas, estrellas y un universo con un agujero negro y flores románticas interactivas.
+Experiencia WebGL cinematográfica 360° en la que un girasol se transforma de forma continua en partículas, estrellas y un universo explorable con un agujero negro, flores, ramos, frases espaciales y cartas románticas interactivas.
 
 ## Requisitos
 
@@ -29,7 +29,10 @@ En Termux, instala Node LTS con `pkg install nodejs-lts`, clona el repositorio, 
 ## Controles
 
 - Tocar o hacer clic en el girasol: iniciar.
-- Tocar una flor: mostrar su frase.
+- Arrastrar: orbitar 360° alrededor del universo.
+- Rueda o pellizco: acercar y alejar dentro de límites seguros.
+- Tocar una flor, ramo o frase: enfocar el objeto y abrir su carta única.
+- Botón `Centrar`: regresar a la composición principal.
 - `E`: abrir o cerrar el editor visual.
 - `Esc`: cerrar una frase o el editor.
 - `M`: activar o silenciar el audio.
@@ -39,9 +42,9 @@ El audio nunca comienza automáticamente.
 
 ## Arquitectura
 
-`App` crea los servicios y mantiene un único loop. `SceneManager` gobierna los estados narrativos sobre una sola escena. La nube del girasol comparte sus buffers con el campo estelar. El render pasa por lensing, bloom y acabado final adaptados al perfil del dispositivo.
+`App` crea los servicios y mantiene un único loop. `SceneManager` gobierna los estados narrativos sobre una sola escena. `CameraRig` encapsula la cámara cinemática, OrbitControls y el foco reversible. La nube del girasol conserva sus buffers como campo estelar; flores y ramos se agrupan con instancing, y Troika genera el texto espacial SDF. El render pasa por lensing, bloom y acabado final adaptados al perfil.
 
-Consulta la [arquitectura](docs/ARCHITECTURE.md), las [decisiones técnicas](docs/DECISIONS.md) y la [especificación visual](docs/VISUAL_SPEC.md).
+Consulta la [arquitectura V2](docs/ARCHITECTURE_V2.md), las [decisiones V2](docs/DECISIONS_V2.md) y la [especificación visual V2](docs/VISUAL_SPEC_V2.md).
 
 ## Editor y configuración
 
@@ -63,4 +66,4 @@ En GitHub configura **Settings → Pages → Source → GitHub Actions**.
 
 ## Colaboración
 
-Lee [AGENTS.md](AGENTS.md) antes de modificar módulos compartidos. El prompt contractual se encuentra en [MASTER_PROMPT.md](MASTER_PROMPT.md).
+Lee [AGENTS.md](AGENTS.md) antes de modificar módulos compartidos. El contrato vigente se encuentra en [MASTER_PROMPT_V2.md](MASTER_PROMPT_V2.md).
