@@ -17,7 +17,7 @@ void main() {
   float core = pow(tube, 4.0);
   float halo = mix(0.45, 1.0, fresnel);
   float pulse = 1.0 + sin(uTime * 0.65) * uPulseAmount;
-  vec3 color = mix(uColorGlow, uColorCore, core) * (0.8 + core * 2.2 + fresnel * 0.65);
-  float alpha = (0.72 + fresnel * 0.28) * filament * uOpacity;
+  vec3 color = mix(uColorGlow, uColorCore, core) * (0.62 + core * 0.92 + fresnel * 0.24);
+  float alpha = clamp((0.58 + fresnel * 0.22) * filament * uOpacity, 0.0, 0.84);
   gl_FragColor = vec4(color * uIntensity * pulse * halo * alpha, alpha);
 }

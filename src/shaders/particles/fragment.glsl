@@ -15,6 +15,7 @@ void main() {
   float halo = 1.0 - smoothstep(0.18, 0.5, radius);
   vec3 petal = mix(uColorStart, uColorMid, vColorMix);
   vec3 color = mix(petal, uColorEnd, vStarProgress);
-  float alpha = (core + halo * 0.42) * vAlpha * uOpacity;
+  color *= mix(1.0, 0.68, vStarProgress);
+  float alpha = (core + halo * 0.22) * vAlpha * uOpacity * mix(1.0, 0.5, vStarProgress);
   gl_FragColor = vec4(color, alpha);
 }
