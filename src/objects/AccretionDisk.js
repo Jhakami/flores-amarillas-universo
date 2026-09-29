@@ -5,7 +5,7 @@ import fragmentShader from '../shaders/accretion/fragment.glsl';
 const DEFAULTS = {
   innerRadius: 0.28, outerRadius: 1, thickness: 0.08, inclination: 0,
   rotationSpeed: 0.08, noiseScale: 3.4, noiseStrength: 0.11,
-  bandFrequency: 42, brightness: 2.1, opacity: 1, verticalWarp: 0.035,
+  bandFrequency: 42, brightness: 0.78, opacity: 0.82, verticalWarp: 0.035,
 };
 const QUALITY = {
   LOW: { radialSegments: 5, tubularSegments: 72, shader: 0 },

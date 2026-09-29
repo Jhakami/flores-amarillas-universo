@@ -39,7 +39,7 @@ void main() {
   gl_Position = projectionMatrix * mvPosition;
   float perspective = uPointScale / max(1.0, -mvPosition.z);
   float starSize = mix(aSize, max(0.65, aSize * 0.34), uStarProgress);
-  gl_PointSize = clamp(starSize * perspective * uPixelRatio, 1.0, 20.0);
+  gl_PointSize = clamp(starSize * perspective * uPixelRatio, 0.8, 6.5);
   vColorMix = aColorMix;
   vStarProgress = uStarProgress;
   vAlpha = smoothstep(0.0, 0.06, max(uProgress, 1.0 - uExplosionProgress));

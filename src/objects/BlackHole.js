@@ -69,7 +69,7 @@ export class BlackHole extends THREE.Group {
     this.photonRing = new PhotonRing({
       radius: config.photonRadius ?? this.config.horizonRadius * 1.14,
       thickness: config.photonThickness ?? 0.025,
-      intensity: config.photonIntensity ?? 3.2,
+      intensity: config.photonIntensity ?? 1,
     }, this.quality);
 
     this.add(this.accretionDisk, this.horizonHalo, this.eventHorizon, this.photonRing);

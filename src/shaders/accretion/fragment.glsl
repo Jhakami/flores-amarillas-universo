@@ -39,7 +39,8 @@ void main() {
   color = mix(color, uColorInner, hotCore);
   float grazingGlow = mix(1.24, 0.88, abs(vViewNormal.z));
   float verticalFade = 0.88 + 0.12 * exp(-abs(vHeight) * 18.0);
-  float alpha = edge * mix(0.68, 1.3, turbulence) * bands * fine * uOpacity * verticalFade * grazingGlow;
-  color *= uBrightness * mix(0.72, 2.15, hotCore);
+  float alpha = edge * mix(0.62, 1.08, turbulence) * bands * fine * uOpacity * verticalFade * grazingGlow;
+  alpha = clamp(alpha, 0.0, 0.82);
+  color *= uBrightness * mix(0.68, 1.28, hotCore);
   gl_FragColor = vec4(color * alpha, alpha);
 }

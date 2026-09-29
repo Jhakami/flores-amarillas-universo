@@ -7,12 +7,12 @@ import { GravitationalLensPass } from './GravitationalLensPass.js';
 import { VignettePass } from './VignettePass.js';
 
 const DEFAULTS = {
-  bloomStrength: 1.35,
-  bloomRadius: 0.48,
-  bloomThreshold: 0.24,
-  exposure: 1.1,
+  bloomStrength: 0.48,
+  bloomRadius: 0.24,
+  bloomThreshold: 0.72,
+  exposure: 0.78,
   vignetteOffset: 1.08,
-  vignetteDarkness: 0.24,
+  vignetteDarkness: 0.38,
 };
 
 export class PostProcessing {
@@ -36,7 +36,7 @@ export class PostProcessing {
     this.vignettePass = new VignettePass({
       offset: this.config.vignetteOffset,
       darkness: this.config.vignetteDarkness,
-      enabled: quality !== 'LOW',
+      enabled: true,
     });
     this.outputPass = new OutputPass();
 
@@ -67,8 +67,8 @@ export class PostProcessing {
   setQuality(profile) {
     this.quality = profile;
     this.lensPass.setQuality(profile);
-    this.vignettePass.enabled = profile !== 'LOW';
-    const factor = profile === 'LOW' ? 0.55 : profile === 'MEDIUM' ? 0.82 : 1;
+    this.vignettePass.enabled = true;
+    const factor = profile === 'LOW' ? 0.62 : profile === 'MEDIUM' ? 0.82 : 1;
     this.bloomPass.strength = this.config.bloomStrength * factor;
     this.bloomPass.radius = this.config.bloomRadius * (profile === 'LOW' ? 0.7 : 1);
   }

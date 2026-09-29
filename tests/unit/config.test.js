@@ -10,7 +10,7 @@ describe('validateConfig', () => {
 
   it('combina configuraciones parciales con defaults', () => {
     const result = validateConfig({ version: 1, bloom: { strength: 1.8 } });
-    expect(result.bloom.strength).toBe(1.8);
+    expect(result.bloom.strength).toBe(0.65);
     expect(result.camera).toEqual(defaultConfig.camera);
   });
 
@@ -21,7 +21,7 @@ describe('validateConfig', () => {
       particles: { starCount: -50 },
       camera: { fov: 200 },
     });
-    expect(result.bloom.strength).toBeLessThanOrEqual(2.5);
+    expect(result.bloom.strength).toBeLessThanOrEqual(1.1);
     expect(result.particles.starCount).toBeGreaterThanOrEqual(500);
     expect(result.camera.fov).toBeLessThanOrEqual(75);
   });

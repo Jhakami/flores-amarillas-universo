@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import vertexShader from '../shaders/photon-ring/vertex.glsl';
 import fragmentShader from '../shaders/photon-ring/fragment.glsl';
 
-const DEFAULTS = { radius: 0.35, thickness: 0.022, intensity: 3.2, pulseAmount: 0.025, opacity: 1 };
+const DEFAULTS = { radius: 0.35, thickness: 0.022, intensity: 1, pulseAmount: 0.018, opacity: 0.86 };
 const QUALITY = {
   LOW: { radial: 8, tubular: 64, shader: 0 },
   MEDIUM: { radial: 12, tubular: 112, shader: 0.5 },
