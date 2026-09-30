@@ -2,14 +2,37 @@ import * as THREE from 'three';
 import vertexShader from '../shaders/stars/vertex.glsl';
 import fragmentShader from '../shaders/stars/fragment.glsl';
 
+export function splitBalancedLines(text, maxLines = 2) {
+  const normalized = String(text ?? '').trim().replace(/\s+/g, ' ');
+  if (!normalized || maxLines < 2) return normalized ? [normalized] : [];
+  const words = normalized.split(' ');
+  if (words.length < 3) return [normalized];
+  let splitIndex = 1;
+  let smallestDifference = Number.POSITIVE_INFINITY;
+  for (let index = 1; index < words.length; index += 1) {
+    const first = words.slice(0, index).join(' ');
+    const second = words.slice(index).join(' ');
+    const difference = Math.abs(first.length - second.length);
+    if (difference < smallestDifference) {
+      smallestDifference = difference;
+      splitIndex = index;
+    }
+  }
+  return [words.slice(0, splitIndex).join(' '), words.slice(splitIndex).join(' ')];
+}
+
 export class TextParticleCloud extends THREE.Points {
-  static sampleText({ text, font = '700 92px serif', width = 1024, height = 256, step = 4, scale = 0.006 } = {}) {
+  static sampleText({ text, font = '700 86px serif', width = 1024, height = 320, step = 4, scale = 0.0055 } = {}) {
     if (typeof document === 'undefined') return new Float32Array(0);
     const canvas = document.createElement('canvas');
     canvas.width = width; canvas.height = height;
     const context = canvas.getContext('2d', { willReadFrequently: true });
     context.clearRect(0, 0, width, height); context.fillStyle = '#fff'; context.font = font;
-    context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(text, width / 2, height / 2);
+    context.textAlign = 'center'; context.textBaseline = 'middle';
+    const lines = String(text ?? '').includes('\n') ? String(text).split('\n').map(line => line.trim()).filter(Boolean) : splitBalancedLines(text);
+    const lineHeight = 98;
+    const firstY = height / 2 - ((lines.length - 1) * lineHeight) / 2;
+    lines.forEach((line, index) => context.fillText(line, width / 2, firstY + index * lineHeight, width * 0.88));
     const data = context.getImageData(0, 0, width, height).data;
     const values = [];
     for (let y = 0; y < height; y += step) for (let x = 0; x < width; x += step) {
