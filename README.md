@@ -1,61 +1,56 @@
-# Universo de Flores Amarillas
+# Universo de Flores Amarillas V3
 
-Experiencia WebGL cinematográfica y explorable en 360 grados construida con Three.js. La secuencia comienza con un girasol suspendido en la oscuridad, transforma sus pétalos en partículas, convierte esas partículas en estrellas y revela un universo romántico alrededor de un agujero negro amarillo-blanco.
+Aplicación web para crear y compartir un universo romántico personalizado. Cada regalo combina una experiencia WebGL 360°, una carta, 18 elementos interactivos y una canción de YouTube. No requiere cuentas ni base de datos: los datos del regalo viajan en una URL comprimida con vencimiento.
 
-Toda la narrativa ocurre dentro de una única escena 3D y un único ciclo de renderizado. No son páginas independientes ni una simulación de interfaz móvil.
+La experiencia está construida con JavaScript modular, Vite, Three.js, GLSL, GSAP, Troika Three Text y Tweakpane. V3 añade un router del lado del cliente, creación de regalos, reproducción visible de YouTube y una función serverless de metadatos.
 
-## Vista del despliegue
+> V3 no es una aplicación completamente “sin backend”. No usa una base de datos ni un servidor persistente, pero sí incluye la función serverless `GET /api/youtube-metadata`, desplegada en Vercel.
 
-![Universo de Flores Amarillas desplegado](docs/assets/universo-desplegado.png)
+## Rutas
 
-La imagen muestra la etapa explorable: el agujero negro ocupa el centro del universo, las microestrellas generan profundidad y las flores, ramos y frases se distribuyen en distintas órbitas. El usuario puede rodear esta composición, elevar la cámara, acercarse y seleccionar cualquier elemento para abrir su carta.
-
-Versión pública: <https://jhakami.github.io/flores-amarillas-universo/>
-
-## Secuencia de la experiencia
-
-~~~text
-oscuridad
-  → nacimiento del girasol
-  → toque del usuario
-  → girasol convertido en partículas
-  → título formado por partículas
-  → viaje entre estrellas
-  → aparición del agujero negro
-  → flores, ramos y frases espaciales
-  → exploración orbital 360 grados
-  → enfoque de un objeto
-  → carta romántica
-~~~
-
-En la etapa final se puede rotar alrededor del universo, elevar la cámara, acercarse o alejarse y tocar flores, ramos o frases. Cada elemento está asociado a una carta propia.
-
-## Tecnologías
-
-| Tecnología | Responsabilidad |
+| Ruta | Función |
 |---|---|
-| HTML5 y CSS3 | Canvas, overlays accesibles, editor y responsive |
-| JavaScript ES Modules | Arquitectura modular, estado y ciclo de vida |
-| Vite | Desarrollo, carga de GLSL, build y bundles |
-| Three.js | Escena 3D, cámara, partículas, instancing y raycasting |
-| GLSL | Morph, estrellas, disco, photon ring y lensing |
-| GSAP | Timelines narrativos y transiciones de cámara |
-| Troika Three Text | Título y frases SDF dentro del espacio 3D |
-| Tweakpane | Editor visual oculto |
-| Web Audio API | Ambiente sonoro activado por gesto |
-| Vitest y ESLint | Pruebas y calidad estática |
-| GitHub Actions | Validación y despliegue en Pages |
+| `/` | Presentación y accesos para crear o ver una demostración. |
+| `/crear` | Formulario de personalización y vista previa de YouTube. |
+| `/demo` | Universo de demostración sin payload personalizado. |
+| `/gift/:token` | Decodifica y valida un regalo contenido en la URL. |
+| `/api/youtube-metadata?url=...` | Valida un enlace y obtiene título, canal y miniatura mediante YouTube oEmbed. |
 
-No se utiliza React, Laravel, Python ni backend. La experiencia se ejecuta completamente en el navegador.
+El router es ligero y se implementa en `src/main.js`. En Vercel, `vercel.json` reescribe todas las rutas que no empiezan por `/api/` hacia `index.html`, por lo que una URL de regalo puede abrirse y recargarse directamente.
 
-## Requisitos
+## Crear y compartir un regalo
 
-- Node.js 20 o posterior.
-- npm 10 o posterior.
-- Navegador moderno con WebGL.
-- WebGL 2 recomendado para calidad HIGH.
+En `/crear` se solicitan:
 
-## Instalación local
+- nombre del destinatario y del remitente;
+- título o dedicatoria;
+- carta personal de hasta 800 caracteres;
+- un enlace obligatorio de YouTube;
+- vencimiento de 1 hora, 6 horas, 1 día, 3 días o 7 días;
+- colección de frases originales, clásicas o combinadas;
+- personalización opcional de hasta 18 tarjetas.
+
+El enlace de YouTube se valida y se consulta en `/api/youtube-metadata`. La interfaz enseña miniatura, título y canal, pero la URL original no se guarda en el regalo: el payload conserva únicamente `videoId` y metadatos saneados.
+
+Al enviar el formulario, `GiftValidator` normaliza el payload y `GiftCodec` lo serializa como JSON, lo comprime con gzip cuando el navegador admite `CompressionStream` y lo codifica como Base64URL. El token resultante se inserta en `/gift/:token` y tiene un límite de 8 KB. El regalo funciona en otro dispositivo sin `localStorage` porque toda la información está en la URL.
+
+La expiración se comprueba localmente al decodificar. Un token vencido, dañado, demasiado grande o de una versión desconocida muestra una pantalla accesible y no inicia WebGL. La fecha no está firmada criptográficamente; este mecanismo limita la vida útil normal del enlace, pero no pretende impedir que una persona técnica modifique su propio token.
+
+## Música y carta cinematográfica
+
+Dentro del universo personalizado se muestra una tarjeta con miniatura, título, canal e icono de acción; nunca muestra la URL original. Al activarla mediante un gesto del usuario:
+
+1. se abre una carta modal sobre el universo, sin reconstruir la escena Three.js;
+2. aparece un reproductor real y visible de YouTube junto a la nota;
+3. se intenta iniciar la reproducción como consecuencia de ese gesto;
+4. al cerrar con el botón, el fondo o `Esc`, se guarda la posición, se pausa el video y se oculta el reproductor;
+5. al abrir de nuevo, la reproducción continúa desde la posición guardada.
+
+No existe audio oculto de YouTube cuando la carta está cerrada. El reproductor usa `youtube-nocookie.com`, una única instancia por regalo y controles visibles. Si el navegador bloquea la reproducción automática posterior al gesto, los controles visibles permiten iniciarla manualmente.
+
+## Desarrollo local
+
+Requisitos: Node.js 20 o posterior, npm 10 o posterior y un navegador moderno con WebGL.
 
 ~~~bash
 git clone https://github.com/Jhakami/flores-amarillas-universo.git
@@ -64,48 +59,32 @@ npm install
 npm run dev
 ~~~
 
-Vite mostrará una dirección local, normalmente:
+Vite sirve normalmente la aplicación en `http://localhost:5173/`. El comando ya incluye `--host 0.0.0.0`, por lo que también puede abrirse desde otro dispositivo de la misma red usando la IPv4 del computador.
 
-~~~text
-http://localhost:5173/flores-amarillas-universo/
-~~~
+### Metadatos de YouTube en desarrollo
 
-### Abrir desde un teléfono en la misma red
+`npm run dev` ejecuta Vite, no las funciones serverless de `api/`. En ese modo, `/crear` usa un fallback **solo de desarrollo** si la petición a `/api/youtube-metadata` falla: conserva el ID validado y muestra datos genéricos con una miniatura determinista de YouTube. Ese fallback no comprueba que el video exista o permita compartir sus metadatos.
 
-~~~bash
-npm run dev -- --host 0.0.0.0
-~~~
-
-Busca la dirección IPv4 del computador con ipconfig en Windows y abre desde el móvil:
-
-~~~text
-http://IP_DEL_COMPUTADOR:5173/flores-amarillas-universo/
-~~~
-
-El teléfono y el computador deben estar en la misma red. Windows puede pedir permiso para que Node.js atraviese el firewall privado.
-
-### Ejecutar con Termux
+Para probar el flujo real de la API localmente, instala/inicia sesión en Vercel CLI y ejecuta desde la raíz del proyecto:
 
 ~~~bash
-pkg update
-pkg install nodejs-lts git
-git clone https://github.com/Jhakami/flores-amarillas-universo.git
-cd flores-amarillas-universo
-npm install
-npm run dev -- --host 0.0.0.0
+npx vercel dev
 ~~~
 
-## Scripts
+Usa la URL que anuncie Vercel CLI. Así se ejecutan `api/youtube-metadata.js`, los rewrites y la aplicación en el mismo origen.
+
+## Comandos de verificación
 
 | Comando | Función |
 |---|---|
-| npm run dev | Servidor con recarga automática |
-| npm run lint | Revisión del código y las pruebas |
-| npm test | Pruebas unitarias |
-| npm run build | Build optimizado en dist |
-| npm run preview | Vista local del build |
+| `npm run dev` | Vite con recarga automática y fallback local de metadatos. |
+| `npx vercel dev` | Aplicación y función real de metadatos en local. |
+| `npm run lint` | ESLint sobre código y pruebas. |
+| `npm test` | Pruebas unitarias con Vitest. |
+| `npm run build` | Build optimizado en `dist/`. |
+| `npm run preview` | Vista local del build estático; no ejecuta la función API. |
 
-Antes de publicar:
+Antes de desplegar:
 
 ~~~bash
 npm run lint
@@ -113,203 +92,28 @@ npm test
 npm run build
 ~~~
 
-## Controles
-
-### Ratón y pantalla táctil
-
-- Tocar o hacer clic en el girasol: comenzar.
-- Arrastrar: orbitar alrededor del universo.
-- Pellizcar o usar la rueda: acercar y alejar.
-- Tocar una flor, ramo o frase: enfocar y abrir su carta.
-- Tocar fuera o deslizar la carta hacia abajo: cerrar.
-- Botón Centrar: regresar a la composición principal.
-
-### Teclado
-
-- E: abrir o cerrar el editor.
-- Esc: cerrar la carta o el editor.
-- M: activar o silenciar el audio.
-- R: reiniciar la experiencia.
-
-El audio nunca se reproduce automáticamente.
-
-## Arquitectura por capas
-
-La aplicación utiliza una escena Three.js única. App crea los servicios, objetos y controladores, y coordina todo mediante un solo requestAnimationFrame.
-
-~~~text
-Entrada
-  main.js
-    ↓
-Orquestación
-  App + SceneManager
-    ↓
-Experiencia
-  ParticleMorph + CameraRig
-    ↓
-Mundo 3D
-  Sunflower + GalaxyField + BlackHole
-  FlowerInstanceSystem + SpatialTextSystem
-    ↓
-Interacción
-  InputManager + UniverseRaycaster + InteractiveRegistry
-    ↓
-Render
-  Renderer → Lens → Bloom → Vignette → Output
-    ↓
-Interfaz accesible
-  prompts + controles + cartas + editor
-~~~
-
-### Capa 1: entrada
-
-src/main.js obtiene el canvas, crea App, inicia la carga y activa un fallback accesible si WebGL no está disponible.
-
-### Capa 2: orquestación
-
-src/core/App.js es el composition root. SceneManager conserva el estado:
-
-~~~text
-BOOT → INTRO → MORPH → MESSAGE → TRAVEL
-     → BLACK_HOLE_REVEAL → UNIVERSE ⇄ QUOTE_FOCUS
-~~~
-
-Los estados no son páginas. Determinan qué sistemas se actualizan y qué progresos o uniforms cambian.
-
-### Capa 3: partículas
-
-SunflowerParticleCloud contiene posiciones iniciales, intermedias y finales. ParticleMorph anima uniforms sin recalcular posiciones en cada frame. La misma geometría termina formando parte del campo estelar.
-
-TextParticleCloud forma el mensaje en dos líneas equilibradas. MessageOverlay ya no dibuja otra copia: solamente anuncia el título mediante aria-live. Esto corrige la frase incompleta y duplicada que aparecía sobre la composición.
-
-### Capa 4: universo
-
-GalaxyField coordina polvo y destellos. BlackHole agrupa horizonte, disco y photon ring. FlowerInstanceSystem representa muchas flores con pocos draw calls. SpatialTextSystem utiliza Troika para mantener frases legibles dentro del espacio.
-
-### Capa 5: cámara e interacción
-
-CameraRig alterna entre introducción, viaje, órbita, foco y retorno. InteractiveRegistry relaciona meshes e instancias con IDs del catálogo. UniverseRaycaster limita el raycast a esos elementos.
-
-### Capa 6: render
-
-~~~text
-THREE.Scene
-  → RenderPass
-  → GravitationalLensPass
-  → UnrealBloomPass
-  → compresión de altas luces
-  → vignette
-  → OutputPass
-~~~
-
-La exposición, el bloom y la luminancia de partículas usan límites seguros para conservar el fondo negro.
-
-La arquitectura completa está explicada en [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md).
-
-## Estructura
-
-~~~text
-src/
-├─ core/            servicios, loop, cámara y estado
-├─ experience/      transición de partículas
-├─ objects/         objetos y sistemas Three.js
-├─ shaders/         programas GLSL
-├─ postprocessing/  lensing, bloom y acabado
-├─ interactions/    teclado, touch y raycasting
-├─ ui/              overlays accesibles y editor
-├─ config/          defaults, validación y migraciones
-├─ data/            catálogo de cartas y frases
-├─ styles/          estilos y responsive
-└─ utils/           layout determinista
-~~~
-
-## Configuración y editor
-
-El editor Tweakpane se abre con E. Permite ajustar exposición, cámara, galaxia, agujero negro, bloom, flores y contenido.
-
-La configuración:
-
-- Se valida antes de utilizarse.
-- Se guarda bajo yellowUniverseConfig.
-- Migra automáticamente versiones anteriores.
-- Limita exposición y bloom a rangos seguros.
-- Puede importarse, exportarse y restaurarse.
-
-Los valores oficiales están en src/config/defaultConfig.js, los límites en configSchema.js y las migraciones en migrations.js.
-
-## Rendimiento
-
-| Perfil | DPR | Estrellas | Polvo | Destellos | Flores | Textos |
-|---|---:|---:|---:|---:|---:|---:|
-| LOW | 1.25 | 2,000 | 700 | 80 | 20 | 14 |
-| MEDIUM | 1.6 | 6,000 | 2,000 | 180 | 42 | 20 |
-| HIGH | 2.0 | 14,000 | 5,000 | 320 | 72 | 24 |
-
-PerformanceManager selecciona el perfil y puede degradarlo si el rendimiento permanece bajo el mínimo. La narrativa y el catálogo no se pierden.
-
-## Accesibilidad
-
-- Soporte para prefers-reduced-motion.
-- Uso completo sin hover.
-- Foco visible y carta modal.
-- Anuncios mediante aria-live.
-- Controles con nombres accesibles.
-- Fallback textual sin WebGL.
-- Audio siempre iniciado por el usuario.
-
-## Assets
-
-~~~text
-public/assets/flowers/sunflower-hero-v2.webp
-public/assets/flowers/sunflower-atlas-v2.webp
-public/assets/flowers/bouquet-atlas-v2.webp
-public/assets/fonts/great-vibes.ttf
-docs/assets/universo-desplegado.png
-~~~
-
 ## Despliegue
 
-Vite utiliza base /flores-amarillas-universo/. Cada push a main ejecuta:
+Vercel es el destino principal de V3. Detecta el build de Vite, publica `dist/`, ejecuta la función `api/youtube-metadata.js` y aplica los rewrites y encabezados de `vercel.json`. La política CSP limita scripts, frames, imágenes y conexiones a los orígenes necesarios, incluidos YouTube y `youtube-nocookie.com`.
 
-~~~text
-npm ci
-  → lint
-  → tests
-  → build
-  → upload dist
-  → GitHub Pages
-~~~
+El despliegue existente en GitHub Pages puede mantenerse como respaldo durante la validación, pero Pages solo sirve archivos estáticos: no ejecuta `/api/youtube-metadata`. Para validar V3 completa se debe usar una Preview de Vercel y probar rutas directas, recargas de `/gift/:token`, móvil, escritorio y videos no disponibles.
 
-En GitHub, Pages debe utilizar GitHub Actions como fuente.
+## Arquitectura y contenido
 
-## Diagnóstico
-
-### El título aparece duplicado o incompleto
-
-La representación visible debe provenir únicamente de TextParticleCloud. MessageOverlay es un anunciador oculto. Comprueba que no se haya restaurado la antigua clase visual message.
-
-### La pantalla aparece demasiado blanca
-
-Revisa general.exposure, bloom.strength, bloom.threshold y blackHole.photonIntensity. La configuración V3 aplica límites seguros.
-
-### La página muestra una versión anterior
-
-Cierra la pestaña y vuelve a abrirla o limpia la caché del sitio.
-
-### No abre desde otro dispositivo
-
-Inicia Vite con --host 0.0.0.0, usa la IPv4 del computador y permite Node.js en el firewall privado.
-
-## Documentación
-
-- [Arquitectura detallada](docs/ARCHITECTURE_V2.md)
-- [Decisiones técnicas](docs/DECISIONS_V2.md)
-- [Especificación visual](docs/VISUAL_SPEC_V2.md)
+- [Arquitectura V3](docs/ARCHITECTURE_V3.md)
+- [Fuentes literarias](docs/LITERARY_SOURCES.md)
+- [Arquitectura V2](docs/ARCHITECTURE_V2.md)
+- [Decisiones V2](docs/DECISIONS_V2.md)
 - [Rendimiento](docs/PERFORMANCE.md)
 - [QA](docs/QA.md)
-- [Reglas para agentes](AGENTS.md)
-- [Contrato maestro](MASTER_PROMPT_V2.md)
 
-## Colaboración
+Las tarjetas clásicas se identifican como `public-domain` y deben conservar autor, obra y fuente verificable. Los textos contemporáneos o inspirados se marcan como `original` y no se atribuyen a autores históricos.
 
-Antes de modificar módulos compartidos, consulta AGENTS.md. Todo cambio en contratos, configuración pública o ciclo narrativo debe acompañarse de lint, pruebas y build.
+## Accesibilidad y controles
+
+- El inicio y la reproducción requieren un gesto del usuario.
+- La carta es un diálogo modal con foco inicial, ciclo de tabulación y cierre mediante `Esc`.
+- Hay foco visible, nombres accesibles y soporte para `prefers-reduced-motion`.
+- El universo puede orbitarse mediante arrastre, rueda o gesto de pellizco.
+- Las flores, ramos y frases abren tarjetas independientes.
+- Si WebGL no está disponible, se muestra un fallback textual.

@@ -1,7 +1,10 @@
+/* global process */
+
 import { defineConfig } from 'vite';
 import glsl from 'vite-plugin-glsl';
 export default defineConfig({
-  base: '/flores-amarillas-universo/',
+  // Vercel serves the SPA at the domain root. GitHub Pages keeps its repository subpath.
+  base: process.env.VERCEL ? '/' : '/flores-amarillas-universo/',
   plugins: [glsl()],
   build: {
     target: 'es2022',
